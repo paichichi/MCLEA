@@ -1,6 +1,5 @@
-
-CUDA_VISIBLE_DEVICES=$1 python3 src/run.py \
-    --file_dir data/DBP15K/$3 \
+CUDA_VISIBLE_DEVICES=0 python src/run.py \
+    --file_dir C:/Users/96446/Documents/GitHub/data/mmkg \
     --rate 0.3 \
     --lr .0005 \
     --epochs 1000 \
@@ -12,7 +11,7 @@ CUDA_VISIBLE_DEVICES=$1 python3 src/run.py \
     --semi_learn_step 5 \
     --csls \
     --csls_k 3 \
-    --seed $2 \
+    --seed 42 \
     --tau 0.1 \
     --tau2 4.0 \
     --structure_encoder "gat" \

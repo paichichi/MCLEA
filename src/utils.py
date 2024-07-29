@@ -48,7 +48,7 @@ def sparse_mx_to_torch_sparse_tensor(sparse_mx):
     return torch.sparse.FloatTensor(indices, values, shape)
 
 
-def read_raw_data(file_dir, l=[1, 2], reverse=False):
+def read_raw_data(file_dir, l, reverse=False):
     print('loading raw data...')
 
     def read_file(file_paths):

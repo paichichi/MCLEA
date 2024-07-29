@@ -21,20 +21,14 @@ The original cross-KG datasets (FB15K-DB15K/YAGO15K) comes from [MMKB](https://g
 Here is the example of training MLCEA on `DBP15K`.
 
 ```bash
-bash run_dbp15k.sh 0 42 zh_en
-bash run_dbp15k.sh 0 42 ja_en
-bash run_dbp15k.sh 0 42 fr_en
+bash run.sh
 ```
 
 ### Cross-KG datasets
 
 Here is the example of training MCLEA on `FB15K_DB15K` with different ratio seeds. Similarly, you can replace the parameter `FB15K_DB15K` with `FB15K_YAGO15K` to train FB15K-YAGO15K dataset.
 
-```bash
-bash run_mmkb.sh 0 42 FB15K_DB15K 0.2
-bash run_mmkb.sh 0 42 FB15K_DB15K 0.5
-bash run_mmkb.sh 0 42 FB15K_DB15K 0.8
-```
+
 
 ## Citation
 

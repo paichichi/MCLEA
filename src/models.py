@@ -148,7 +148,7 @@ class MultiModalEncoder(nn.Module):
         self.rel_fc = nn.Linear(1000, attr_dim)
         self.att_fc = nn.Linear(1000, attr_dim)
         self.img_fc = nn.Linear(img_feature_dim, img_dim)
-        self.name_fc = nn.Linear(300, char_dim)
+        self.name_fc = nn.Linear(300, name_dim)
         self.char_fc = nn.Linear(char_feature_dim, char_dim)
 
         # structure encoder

@@ -54,11 +54,11 @@ class icl_loss(nn.Module):
                 emb2 = F.normalize(emb2, dim=1)
         num_ent = emb.shape[0]
         # Get (normalized) hidden1 and hidden2.
-        zis = emb[train_links[:, 0]]
+        zis = emb[train_links[:, 0]]  # (4500, 300)
         if emb2 is not None:
-            zjs = emb2[train_links[:, 1]]
+            zjs = emb2[train_links[:, 1]] # (4500, 300)
         else:
-            zjs = emb[train_links[:, 1]]
+            zjs = emb[train_links[:, 1]] # (4500, 300)
 
         temperature = self.tau
         alpha = self.weight
@@ -78,11 +78,11 @@ class icl_loss(nn.Module):
         masks = F.one_hot(torch.arange(start=0, end=batch_size, dtype=torch.int64), num_classes=batch_size)
         masks = masks.to(self.device).float()
         logits_aa = torch.matmul(hidden1, torch.transpose(hidden1_large, 0, 1)) / temperature
-        logits_aa = logits_aa - masks * LARGE_NUM
+        logits_aa = logits_aa - masks * LARGE_NUM # (4500, 4500)
         logits_bb = torch.matmul(hidden2, torch.transpose(hidden2_large, 0, 1)) / temperature
-        logits_bb = logits_bb - masks * LARGE_NUM
-        logits_ab = torch.matmul(hidden1, torch.transpose(hidden2_large, 0, 1)) / temperature
-        logits_ba = torch.matmul(hidden2, torch.transpose(hidden1_large, 0, 1)) / temperature
+        logits_bb = logits_bb - masks * LARGE_NUM # (4500, 4500)
+        logits_ab = torch.matmul(hidden1, torch.transpose(hidden2_large, 0, 1)) / temperature # (4500, 4500)
+        logits_ba = torch.matmul(hidden2, torch.transpose(hidden1_large, 0, 1)) / temperature # (4500, 4500)
 
         # logits_a = torch.cat([logits_ab, self.intra_weight*logits_aa], dim=1)
         # logits_b = torch.cat([logits_ba, self.intra_weight*logits_bb], dim=1)

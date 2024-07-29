@@ -26,16 +26,16 @@ def load_img_features(ent_num, file_dir):
     # load images features
     if "V1" in file_dir:
         split = "norm"
-        img_vec_path = "data/pkls/dbpedia_wikidata_15k_norm_GA_id_img_feature_dict.pkl"
+        img_vec_path = "data/mmkg/pkls/dbpedia_wikidata_15k_norm_GA_id_img_feature_dict.pkl"
     elif "V2" in file_dir:
         split = "dense"
-        img_vec_path = "data/pkls/dbpedia_wikidata_15k_dense_GA_id_img_feature_dict.pkl"
+        img_vec_path = "data/mmkg/pkls/dbpedia_wikidata_15k_dense_GA_id_img_feature_dict.pkl"
     elif "FB15K" in file_dir:
         filename = os.path.split(file_dir)[-1].upper()
         img_vec_path = "data/mmkb-datasets/" + filename + "/" + filename + "_id_img_feature_dict.pkl"
     else:
         split = file_dir.split("/")[-1]
-        img_vec_path = "data/pkls/" + split + "_GA_id_img_feature_dict.pkl"
+        img_vec_path = file_dir + "/pkls/" + "zh_en_GA_id_img_feature_dict.pkl"
 
     img_features = load_img(ent_num, img_vec_path)
     return img_features
@@ -250,10 +250,11 @@ class MCLEA:
         file_dir = self.args.file_dir
         device = self.device
 
+        print(file_dir)
         self.ent2id_dict, self.ills, self.triples, self.r_hs, \
-        self.r_ts, self.ids = read_raw_data(file_dir, lang_list)
-        e1 = os.path.join(file_dir, 'ent_ids_1')
-        e2 = os.path.join(file_dir, 'ent_ids_2')
+        self.r_ts, self.ids = read_raw_data(file_dir + '/DBP15K/zh_en', lang_list)
+        e1 = os.path.join(file_dir, 'DBP15K/zh_en/ent_ids_1')
+        e2 = os.path.join(file_dir, 'DBP15K/zh_en/ent_ids_2')
         self.left_ents = get_ids(e1)
         self.right_ents = get_ids(e2)
 
@@ -293,8 +294,10 @@ class MCLEA:
             # if supervised
             self.train_ill = np.array(self.ills[:int(len(self.ills) // 1 * self.args.rate)], dtype=np.int32)
 
+        print('self.train_ill', len(self.train_ill))
         self.test_ill_ = self.ills[int(len(self.ills) // 1 * self.args.rate):]
         self.test_ill = np.array(self.test_ill_, dtype=np.int32)
+        print('self.test_ill_', len(self.test_ill_))
 
         self.test_left = torch.LongTensor(self.test_ill[:, 0].squeeze()).to(device)
         self.test_right = torch.LongTensor(self.test_ill[:, 1].squeeze()).to(device)
@@ -313,8 +316,8 @@ class MCLEA:
         print("relation feature shape:", self.rel_features.shape)
 
         # convert attributions to numbers
-        a1 = os.path.join(file_dir, 'training_attrs_1')
-        a2 = os.path.join(file_dir, 'training_attrs_2')
+        a1 = os.path.join(file_dir, 'DBP15K/zh_en/training_attrs_1')
+        a2 = os.path.join(file_dir, 'DBP15K/zh_en/training_attrs_2')
         self.att_features = load_attr([a1, a2], self.ENT_NUM, self.ent2id_dict, 1000)  # attr
         self.att_features = torch.Tensor(self.att_features).to(device)
         print("attribute feature shape:", self.att_features.shape)
@@ -415,7 +418,7 @@ class MCLEA:
     def train(self):
 
         # print args
-        pprint(self.args)
+        print(self.args)
 
         # Train
         print("[start training...] ")
@@ -448,6 +451,10 @@ class MCLEA:
                                                                     self.att_features,
                                                                     self.name_features,
                                                                     self.char_features)
+            print(gph_emb.shape)
+            print(img_emb.shape)
+            print(rel_emb.shape)
+            print(att_emb.shape)
 
             loss_sum_gcn, loss_sum_rel, loss_sum_att, loss_sum_img, loss_sum_all = 0, 0, 0, 0, 0
 
